@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Icosahedron Refraction with Image</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Initialize Three.js
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Load texture
+        const textureLoader = new THREE.TextureLoader();
+        const texture = textureLoader.load('data:image/jpeg;base64,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');
+
+        // Create material with refraction
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            metalness: 0.5,
+            roughness: 0.5,
+            transmission: 0.9, // Refraction
+            transparent: true,
+            opacity: 0.8,
+            envMapIntensity: 1,
+            refractionRatio: 0.98,
+            side: THREE.DoubleSide, // Render both sides
+            map: texture
+        });
+
+        // Create icosahedron geometry
+        const geometry = new THREE.IcosahedronGeometry(5, 0);
+
+        // Create grid of icosahedrons
+        const gridCount = 5;
+        const spacing = 10;
+        for (let i = 0; i < gridCount; i++) {
+            for (let j = 0; j < gridCount; j++) {
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set((i - (gridCount - 1) / 2) * spacing, (j - (gridCount - 1) / 2) * spacing, 0);
+                scene.add(mesh);
+            }
+        }
+
+        // Position the camera
+        camera.position.z = 20;
+
+        // Add lighting
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+
+        // Render the scene
+        function animate() {
+            requestAnimationFrame(animate);
+            scene.rotation.x += 0.01;
+            scene.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
